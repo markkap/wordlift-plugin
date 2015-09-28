@@ -4,6 +4,101 @@
  * This file provides methods and functions to generate entities meta-boxes in the admin UI.
  */
 
+// CMB2 gets the wrong path to its js and css files. We use the provided filter to correct it.
+function update_cmb_meta_box_url( $url ) {
+    return plugins_url( '/modules/cmb2/', __FILE__ );
+}
+add_filter( 'cmb2_meta_box_url', 'update_cmb_meta_box_url' );
+
+
+
+
+function wl_set_metabox_data_attributes( $args, $field ) {
+    $field->args['attributes']['data-postid'] = 'Place,LocalBusiness';
+    var_dump($field);
+}
+
+
+/**
+ * Adds the entities meta box (called from *add_meta_boxes* hook).
+ *
+ * @param string $post_type The type of the current open post.
+ */
+add_action( 'cmb2_init', 'wl_admin_cmb2_add_entities_meta_box' );
+function wl_admin_cmb2_add_entities_meta_box() {
+    
+    // Let's load the custom fields
+    $meta_list = array();
+    $types_list = wl_entity_taxonomy_get_custom_fields();
+    foreach( $types_list as $type_name => $type_properties ) {
+        $meta_list = array_merge( $meta_list, $type_properties );
+    }
+    
+    /* POSSIBILITA'
+     * - per ogni tipo creo una metabox differente
+     * - creo una sola metabox con tutti i field
+     */
+    
+    // Create one metabox
+    $cmb = new_cmb2_box( array(
+        'id'            => 'wl_metaboxes',
+        'title'         => __('Entity properties'),
+        'object_types'  => array( WL_ENTITY_TYPE_NAME ), // only for entity post type
+        'context'       => 'normal', // 'normal', 'advanced' or 'side'
+        'priority'      => 'high', // 'high', 'core', 'default' or 'low'
+        'show_names'    => true, // show field names on the left
+        'cmb_styles'    => true, // false to disable the CMB stylesheet
+    ) );
+    
+    // Loop over all properties. Each will be added to the metabox only when needed
+    foreach( $meta_list as $meta_db_name => $meta ){
+        wl_write_log('piedo taxonomy');
+        wl_write_log( $meta_db_name );
+        wl_write_log( $meta );
+        
+        $meta_title = explode( '/', $meta['predicate'] );
+        $meta_title = end( $meta_title );
+        
+        $repeatable = isset( $meta['constraints']['cardinality'] )
+                && $meta['constraints']['cardinality'] == INF;
+            
+        if( isset( $meta['constraints']['uri_type'] ) ){
+            $expected_uri_types = isset( $meta['constraints']['uri_type'] );
+        } else {
+            $expected_uri_types = array();
+        }
+        
+        // TODO: convert metabox types
+        // TODO: also here we should separate simple and grouped properties
+        // TODO: implement callbacks
+        
+        /*$cmb->add_field( array(
+            'name' => $meta_title,
+            'id'   => $meta_db_name,
+            'type' => 'text',//$meta['type'],
+            'multiple'  => true, 
+            'repeatable' => true,               // store each value as separate db record
+            'before' => 'wl_set_metabox_data_attributes',         // TODO: how do I pass expected types ???
+
+        ) );*/
+        
+        $cmb->add_field( array(
+            'name' => $meta_title,
+            'id'   => $meta_db_name,
+            'type' => 'text',
+            'multiple'  => true, 
+            'repeatable' => true,               // store each value as separate db record
+        ) );
+
+        // AUTOCOMPLETE
+        // https://github.com/WebDevStudios/CMB2-Snippet-Library/blob/master/custom-field-types/autocomplete-field-type.php
+       
+        
+    }
+}
+
+
+
 /**
  * Adds the entities meta box (called from *add_meta_boxes* hook).
  *

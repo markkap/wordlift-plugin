@@ -682,6 +682,7 @@ require_once( 'admin/wordlift_admin_save_post.php' );
 require_once( 'admin/wordlift_admin_bar.php' );
 
 // add the entities meta box.
+require_once( 'modules/cmb2/init.php' );  // loading CMB2 classes
 require_once( 'admin/wordlift_admin_meta_box_entities.php' );
 require_once( 'admin/wordlift_admin_entity_type_taxonomy.php' );
 

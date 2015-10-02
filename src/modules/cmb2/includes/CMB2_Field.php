@@ -225,11 +225,13 @@ class CMB2_Field {
 		 */
 		$data = apply_filters( "cmb2_override_{$a['field_id']}_meta_value", $data, $this->object_id, $a, $this );
 
+        var_dump( $a );
+        
 		// If no override, get value normally
 		if ( 'cmb2_field_no_override_val' === $data ) {
 			$data = 'options-page' === $a['type']
 				? cmb2_options( $a['id'] )->get( $a['field_id'] )
-				: get_metadata( $a['type'], $a['id'], $a['field_id'], ( $a['single'] || $a['repeat'] ) );
+				: get_metadata( $a['type'], $a['id'], $a['field_id'], ( $a['single'] || !$a['repeat'] ) );
 		}
 
 
@@ -238,7 +240,7 @@ class CMB2_Field {
 				? $data[ $this->group->index ][ $this->args( '_id' ) ]
 				: false;
 		}
-
+var_dump($data);
 		return $data;
 	}
 
@@ -301,6 +303,8 @@ class CMB2_Field {
 
 		// Add metadata if not single
 		if ( ! $a['single'] ) {
+            wl_write_log('piedo cmb2');
+            wl_write_log( $a );
 			return add_metadata( $a['type'], $a['id'], $a['field_id'], $a[ 'value' ], false );
 		}
 
@@ -427,7 +431,7 @@ class CMB2_Field {
 	 * @return bool                Result of save
 	 */
 	public function save_field_from_data( $data_to_save ) {
-
+        
 		$meta_value = isset( $data_to_save[ $this->id( true ) ] )
 			? $data_to_save[ $this->id( true ) ]
 			: null;

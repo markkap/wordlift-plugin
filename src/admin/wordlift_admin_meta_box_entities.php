@@ -52,9 +52,9 @@ function wl_admin_cmb2_add_entities_meta_box() {
     
     // Loop over all properties. Each will be added to the metabox only when needed
     foreach( $meta_list as $meta_db_name => $meta ){
-        wl_write_log('piedo taxonomy');
-        wl_write_log( $meta_db_name );
-        wl_write_log( $meta );
+        //wl_write_log('piedo taxonomy');
+        //wl_write_log( $meta_db_name );
+        //wl_write_log( $meta );
         
         $meta_title = explode( '/', $meta['predicate'] );
         $meta_title = end( $meta_title );
@@ -72,15 +72,11 @@ function wl_admin_cmb2_add_entities_meta_box() {
         // TODO: also here we should separate simple and grouped properties
         // TODO: implement callbacks
         
-        /*$cmb->add_field( array(
-            'name' => $meta_title,
-            'id'   => $meta_db_name,
-            'type' => 'text',//$meta['type'],
-            'multiple'  => true, 
-            'repeatable' => true,               // store each value as separate db record
-            'before' => 'wl_set_metabox_data_attributes',         // TODO: how do I pass expected types ???
-
-        ) );*/
+        //// REMOVE THIS ////
+        if( $meta_db_name !== WL_CUSTOM_FIELD_SAME_AS ){
+            continue;
+        }
+        ///////////////
         
         $cmb->add_field( array(
             'name' => $meta_title,
@@ -88,6 +84,7 @@ function wl_admin_cmb2_add_entities_meta_box() {
             'type' => 'text',
             'multiple'  => true, 
             'repeatable' => true,               // store each value as separate db record
+            //'before' => 'wl_set_metabox_data_attributes',         // TODO: how do I pass expected types ???
         ) );
 
         // AUTOCOMPLETE
@@ -607,7 +604,7 @@ function wl_entities_uri_metaboxes_build_template( $meta_name, $meta_values, $ca
 /**
  * Saves the values of wordlift metaboxes set in the entity editor page
  */
-function wl_entity_metabox_save( $post_id ) {
+/*function wl_entity_metabox_save( $post_id ) {
 
 	if ( ! isset( $_POST['wl_metaboxes'] ) ) {
 		return;
@@ -706,4 +703,4 @@ function wl_entity_metabox_save( $post_id ) {
 	wl_linked_data_push_to_redlink( $post_id );
 }
 
-add_action( 'wl_linked_data_save_post', 'wl_entity_metabox_save' );
+add_action( 'wl_linked_data_save_post', 'wl_entity_metabox_save' );*/

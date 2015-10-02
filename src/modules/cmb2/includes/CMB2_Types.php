@@ -180,6 +180,7 @@ class CMB2_Types {
 	 */
 	public function concat_attrs( $attrs, $attr_exclude = array() ) {
 		$attributes = '';
+        
 		foreach ( $attrs as $attr => $val ) {
 			$excluded = in_array( $attr, (array) $attr_exclude, true );
 			$empty    = false === $val && 'value' !== $attr;
@@ -287,6 +288,7 @@ class CMB2_Types {
 		$table_id = $this->field->id() . '_repeat';
 
 		$this->_desc( true, true, true );
+        
 		?>
 
 		<div id="<?php echo $table_id; ?>" class="cmb-repeat-table cmb-nested">
@@ -311,7 +313,7 @@ class CMB2_Types {
 		$meta_value = array_filter( (array) $this->field->escaped_value() );
 		// check for default content
 		$default    = $this->field->args( 'default' );
-
+        
 		// check for saved data
 		if ( ! empty( $meta_value ) ) {
 			$meta_value = is_array( $meta_value ) ? array_filter( $meta_value ) : $meta_value;

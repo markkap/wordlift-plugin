@@ -19,10 +19,10 @@ function wl_shortcode_blog_map( $atts ) {
 	$widget_id = 'wl-blog-map';
 
 	// Adding css
-	wp_enqueue_style( 'vis', dirname( plugin_dir_url( __FILE__ ) ) . '/public/js/visjs/vis.css' );
+	wp_enqueue_style( 'vis', dirname( plugin_dir_url( __FILE__ ) ) . '/public/js/visjs/vis.min.css' );
 
 	// Adding javascript code
-	wp_enqueue_script( 'vis', dirname( plugin_dir_url( __FILE__ ) ) . '/public/js/visjs/vis.js' );
+	wp_enqueue_script( 'vis', dirname( plugin_dir_url( __FILE__ ) ) . '/public/js/visjs/vis.min.js' );
 	wp_enqueue_script( 'blog-map-launcher', dirname( plugin_dir_url( __FILE__ ) ) . '/public/js/wordlift_shortcode_blog_map.js' );
 	wp_localize_script( 'blog-map-launcher', 'blog_map_params', array(
 			'ajax_url'          => admin_url( 'admin-ajax.php' ),

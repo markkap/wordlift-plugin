@@ -101,6 +101,9 @@ class Wordlift_Post_To_Jsonld_Converter {
 		// Get the configured type custom fields.
 		$fields = $type['custom_fields'];
 
+		// get author
+		$author = get_the_author_meta('display_name',$post->post_author);
+		
 		// Prepare the response.
 		$jsonld = array(
 			'@context'    => self::CONTEXT,
@@ -108,8 +111,28 @@ class Wordlift_Post_To_Jsonld_Converter {
 			'@type'       => $type,
 			'headline'        => $name,
 			'description' => $this->get_excerpt( $post ),
+			'author'      => $author,
+			'datePublished' => get_post_time( 'Y-m-d\TH:i', true, $post, false ),
+			'dateModified' => get_the_modified_time('Y-m-d\TH:i',$post),
 		);
+		
+		// insert publisher
+		$configuration = Wordlift_Configuration_Service::get_instance();
+		$publisher_id  = $configuration->get_publisher_id();
 
+		// do not try to add publisher if plugin setup is not completed
+		if ( $publisher_id ) {
+
+			$type = Wordlift_Entity_Type_Service::get_instance()->get( $publisher_id );
+			$logo = get_the_post_thumbnail_url( $publisher_id, 'full' );
+
+			$publisher_post = get_post( $publisher_id );
+			$publisher_name = $publisher_post->post_title;
+
+			$jsonld['publisher'] = $name; 
+		}
+		
+		
 		// Set the image URLs if there are images.
 		$images = wl_get_image_urls( $post->ID );
 		if ( 0 < count( $images ) ) {

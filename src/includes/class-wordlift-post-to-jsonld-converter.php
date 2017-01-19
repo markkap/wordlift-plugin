@@ -111,7 +111,7 @@ class Wordlift_Post_To_Jsonld_Converter {
 			'@type'       => $type,
 			'headline'        => $name,
 			'description' => $this->get_excerpt( $post ),
-			'author'      => $author,
+			'author'      => array ('@type' => 'Person', 'name' => $author),
 			'datePublished' => get_post_time( 'Y-m-d\TH:i', true, $post, false ),
 			'dateModified' => get_the_modified_time('Y-m-d\TH:i',$post),
 		);
@@ -129,9 +129,12 @@ class Wordlift_Post_To_Jsonld_Converter {
 			$publisher_post = get_post( $publisher_id );
 			$publisher_name = $publisher_post->post_title;
 
-			$jsonld['publisher'] = $name; 
+			$jsonld['publisher'] = array(
+				'@type'	=> str_replace('http://schema.org/','',Wordlift_Entity_Type_Service::get_instance()->get($publisher_id)),
+				'name' 	=> $publisher_name, 
+				'logo' 	=> array('url' => $logo),
+				);
 		}
-		
 		
 		// Set the image URLs if there are images.
 		$images = wl_get_image_urls( $post->ID );
